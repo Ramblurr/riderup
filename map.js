@@ -2,12 +2,28 @@ var native_map = null;
 var marker = null;
 var tooltip = null;
 var mouseMarker = null;
-var placedMarker
+var placedMarker = null;
+var latlng = null;
 
 function main() {
     // setup map
     cartodb.createVis('map', 'http://rendezvous.cartodb.com/api/v2/viz/4bdd593e-1621-11e3-9eaf-53da8c591d44/viz.json').done(function(vis, layers) {
         native_map = vis.getNativeMap();
+
+        //search control
+        native_map.addControl( new L.Control.Search({
+            url: 'http://nominatim.openstreetmap.org/search?format=json&q={s}',
+            jsonpParam: 'json_callback',
+            propertyName: 'display_name',
+            propertyLoc: ['lat','lon'],
+            markerLocation: false,
+            autoType: false,
+            autoCollapse: true,
+            minLength: 2,
+            zoom:10,
+            position: 'topright',
+        }) );
+
         native_map.on('mousemove', function(e) {
             if (!mouseMarker) return;
             tooltip.updatePosition(e.latlng);
@@ -44,25 +60,32 @@ function main() {
 
     $("#choose-point").click(function() {
         $('.editing').show();
-        $('.leaflet-container').css('cursor', 'default');
+        $('.leaflet-container').css('cursor', 'crosshair');
+        $("#latlng").text('');
+        if(placedMarker) {
+            native_map.removeLayer(placedMarker);
+            placedMarker = null;
+        }
         showMouseMarker();
     });
     $("#point-discard").click(function() {
+        $('.leaflet-container').css('cursor', '');
         $('.editing').hide();
         discard();
     });
     $("#point-done").click(function() {
+        $('.leaflet-container').css('cursor', '');
         $('.editing').hide();
-        hideMouseMarker();
+        done();
     });
 } // main
 
 function showMouseMarker() {
     mouseMarker = L.marker(native_map.getCenter(), {
         icon: L.divIcon({
-            className: 'leaflet-mouse-marker',
+            className: 'leaflet-mouse-marker cursor-crosshair',
             iconAnchor: [20, 20],
-            iconSize: [40, 40]
+            iconSize: [40, 40],
         }),
         opacity: 0,
         zIndexOffset: 2000 // This should be > than the highest z-index any markers
@@ -75,6 +98,13 @@ function showMouseMarker() {
 
 function discard() {
     native_map.removeLayer(placedMarker);
+    placedMarker = null;
+    latlng = null;
+    hideMouseMarker();
+}
+
+function done() {
+    $("#latlng").text(latlng.lat + ", " + latlng.lng);
     hideMouseMarker();
 }
 
@@ -84,19 +114,23 @@ function hideMouseMarker() {
     tooltip.dispose();
     mouseMarker = null;
     marker = null;
-    placedMarker = null;
 }
 
 function mapClicked() {
+    latlng = marker.getLatLng();
     if (!placedMarker) {
-        placedMarker = new L.Marker(marker.getLatLng(), {
+        placedMarker = new L.Marker(latlng, {
             icon: new L.Icon.Default(),
             zIndexOffset: 2000 // This should be > than the highest z-index any markers
         });
         native_map.addLayer(placedMarker);
     } else {
-        placedMarker.setLatLng(marker.getLatLng());
+        placedMarker.setLatLng(latlng);
     }
     $("#point-done").toggleClass("disabled", false);
+}
+
+function validate() {
+
 }
 window.onload = main;
