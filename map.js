@@ -4,10 +4,12 @@ var tooltip = null;
 var mouseMarker = null;
 var placedMarker = null;
 var latlng = null;
+var map_vis = null;
 
 function main() {
     // setup map
     cartodb.createVis('map', 'http://rendezvous.cartodb.com/api/v2/viz/4bdd593e-1621-11e3-9eaf-53da8c591d44/viz.json').done(function(vis, layers) {
+        map_vis = vis;
         native_map = vis.getNativeMap();
 
         //search control
@@ -81,34 +83,41 @@ function main() {
         done();
     });
 
-    $("#travelers").validate({
-        errorClass: "control-label",
-        highlight: function (element) {
-            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
-        },
-        success: function (element) {
-            element.text('OK!').addClass('valid')
-                .closest('.form-group').removeClass('has-error').addClass('has-success');
-        },
-        rules: {
-            name: "required",
-            description: { required: true, minlength: 25 },
-            contact: "required",
-            latlng: "required"
-        },
-        messages: {
-            name: "Please enter your name or handle",
-            description: { required: "Please enter a short description of your journey", minlength: "Description must be longer" },
-            contact: "Please enter some contact details",
-            latlng: "Please select your location on the map"
-        },
-        submitHandler: function(form) {
-            form.submit();
-        }
-    });
+window.setInterval(refreshMap, 5000);
 
+//} // main
 
-} // main
+$(document).ready(function() {
+$("#travelers").validate({
+    errorClass: "control-label",
+    highlight: function (element) {
+        $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+    },
+    success: function (element) {
+        element.text('OK!').addClass('valid')
+            .closest('.form-group').removeClass('has-error').addClass('has-success');
+    },
+    rules: {
+        name: "required",
+        description: { required: true, minlength: 25 },
+        contact: "required",
+        latlng: "required"
+    },
+    messages: {
+        name: "Please enter your name or handle",
+        description: { required: "Please enter a short description of your journey", minlength: "Description must be longer" },
+        contact: "Please enter some contact details",
+        latlng: "Please select your location on the map"
+    },
+    submitHandler: function(form) {
+        console.log("submit handler)");
+        insertData();
+        return false;
+    }
+});
+});
+}
+
 
 function showMouseMarker() {
     mouseMarker = L.marker(native_map.getCenter(), {
@@ -135,7 +144,7 @@ function discard() {
 
 function done() {
     if(!latlng) return;
-    $("#submit").toggleClass("disabled", false);
+    $("#data-submit").toggleClass("disabled", false);
     hideMouseMarker();
 }
 
@@ -174,4 +183,39 @@ function clearLatLng(){
     $("#latlng").text('');
     $('input[name=latlng]').val('');
 }
+
+function insertData() {
+
+    var cartodb_api_key = 'e7ee67b39a9f66b9dd7d2cbf16d7cd64d73d338f';
+    var cartodb_user = 'rendezvous';
+    var sql = new cartodb.SQL({ user: cartodb_user, api_key: cartodb_api_key  });
+
+    var loc = "CDB_LatLng("+latlng.lat+","+latlng.lng+")";
+
+    var name = $('input[name=name]').val();
+    var description = $('textarea[name=description]').val();
+    var contact = $('input[name=contact]').val();
+
+    /**
+    * Remove all single quotes
+    */
+    name = name.replace("'","''");
+    description = description.replace("'","''");
+    contact =  contact.replace("'","''");
+
+    var query = "INSERT INTO traveler_data(name,description,contact,the_geom) VALUES('"+name+"','"+description+"','"+contact+"',"+loc+")";
+    console.log(query);
+
+    sql.execute(query).done(function(data) {
+        refreshMap();
+    }).error(function(errors) {
+        console.log("error:" + errors);
+    });
+}
+
+function refreshMap() {
+    layer = map_vis.getLayers()[1].invalidate();
+}
+
+
 window.onload = main;
