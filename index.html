@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Riders Round the World</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="css/mbExtruder.css" media="all" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
+    <script type="text/javascript" src="jquery.mb.extruder-2.5.0/inc/jquery.hoverIntent.min.js"></script>
+    <script type="text/javascript" src="jquery.mb.extruder-2.5.0/inc/jquery.mb.flipText.js"></script>
+    <script type="text/javascript" src="jquery.mb.extruder-2.5.0/inc/mbExtruder.js"></script>
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <!--[if lte IE 8]>
+      <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.ie.css" />
+    <![endif]-->
+    <!--Switch between the different themes changing the stylesheet below - light-theme.css |dark-theme.css -->
+    <link rel="stylesheet" href="css/light-theme.css">
+    <link rel="stylesheet" href="css/makeitresponsive.css">
+  </head>
+  <body>
+
+    <div class="map" id="map"></div>
+
+<div class="editing panel panel-info" style="display: none">
+        <div class="panel-heading">
+          <h3 class="panel-title">Click on the map to choose your location</h3>
+        </div>
+        <div class="panel-body text-center">
+  <a id="point-discard" class="btn btn-primary">discard</a>
+  <a id="point-done" class="btn btn-default disabled">done</a>
+        </div>
+      </div>
+
+    <div class="{title:'Interact'}" id="sidepanel">
+      <div class="wrapper">
+        <h1>Have Bike. Will Travel.</h1>
+        <p>
+        Right now, there are people traveling 'round the world by bicycle.
+        </p>
+        <p>
+        Maybe you're one of them.
+        </p>
+
+
+<div class="reformed-form">
+    <form method="post" name="travelers" id="travelers" action="reformed/formmail/formmail.php">
+<div class="form-group">
+                <label for="Name">Your name(s)</label>
+            <input type="text" id="Name" class="required form-control" name="Name" />
+</div>
+<div class="form-group">
+                <label for="description">About your journey</label>
+            <textarea id="description" class="required form-control" name="description" rows="5" cols="50">
+</textarea>
+</div>
+<div class="form-group">
+                <label for="contact">Contact method (twitter, email, URL)</label>
+            <input type="text" id="contact" class="form-control" name="contact" />
+</div>
+<div class="form-group">
+<label for="location">Current location</label>
+            <button id="choose-point" class="btn btn-default" type="button">Choose on Map</button>
+</div>
+<div class="form-group">
+            <button type="submit" class="btn btn-primary disabled">Submit</button>
+</div>
+        </form>
+</div>
+
+      </div>
+    </div>
+
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false&v=3.8"></script>
+    <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script>
+    <script src="Leaflet.draw-master/src/Tooltip.js"></script>
+    <script type="text/javascript" src="map.js"></script>
+
+  </body>
+      </html>
