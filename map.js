@@ -63,7 +63,7 @@ function main() {
     $("#choose-point").click(function() {
         $('.editing').show();
         $('.leaflet-container').css('cursor', 'crosshair');
-        $("#latlng").text('');
+        clearLatLng();
         if(placedMarker) {
             native_map.removeLayer(placedMarker);
             placedMarker = null;
@@ -129,13 +129,12 @@ function showMouseMarker() {
 function discard() {
     native_map.removeLayer(placedMarker);
     placedMarker = null;
-    latlng = null;
     hideMouseMarker();
+    clearLatLng();
 }
 
 function done() {
     if(!latlng) return;
-    $("#latlng").text(latlng.lat + ", " + latlng.lng);
     $("#submit").toggleClass("disabled", false);
     hideMouseMarker();
 }
@@ -150,7 +149,7 @@ function hideMouseMarker() {
 
 function mapClicked() {
     if( !marker ) return;
-    latlng = marker.getLatLng();
+    setLatLng(marker.getLatLng());
     if (!placedMarker) {
         placedMarker = new L.Marker(latlng, {
             icon: new L.Icon.Default(),
@@ -163,7 +162,16 @@ function mapClicked() {
     $("#point-done").toggleClass("disabled", false);
 }
 
-function validate() {
+function setLatLng(ll) {
+    latlng = ll;
+    ll_str = latlng.lat + "," + latlng.lng
+    $('input[name=latlng]').val(ll_str);
+    $("#latlng").text(ll_str);
+}
 
+function clearLatLng(){
+    latlng = null;
+    $("#latlng").text('');
+    $('input[name=latlng]').val('');
 }
 window.onload = main;
