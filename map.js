@@ -78,6 +78,34 @@ function main() {
         $('.editing').hide();
         done();
     });
+
+    $("#travelers").validate({
+        errorClass: "control-label",
+        highlight: function (element) {
+            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+        },
+        success: function (element) {
+            element.text('OK!').addClass('valid')
+                .closest('.form-group').removeClass('has-error').addClass('has-success');
+        },
+        rules: {
+            name: "required",
+            description: { required: true, minlength: 25 },
+            contact: "required",
+            latlng: "required"
+        },
+        messages: {
+            name: "Please enter your name or handle",
+            description: { required: "Please enter a short description of your journey", minlength: "Description must be longer" },
+            contact: "Please enter some contact details",
+            latlng: "Please select your location on the map"
+        },
+        submitHandler: function(form) {
+            form.submit();
+        }
+    });
+
+
 } // main
 
 function showMouseMarker() {
@@ -104,7 +132,9 @@ function discard() {
 }
 
 function done() {
+    if(!latlng) return;
     $("#latlng").text(latlng.lat + ", " + latlng.lng);
+    $("#submit").toggleClass("disabled", false);
     hideMouseMarker();
 }
 
@@ -117,6 +147,7 @@ function hideMouseMarker() {
 }
 
 function mapClicked() {
+    if( !marker ) return;
     latlng = marker.getLatLng();
     if (!placedMarker) {
         placedMarker = new L.Marker(latlng, {
