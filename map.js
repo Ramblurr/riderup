@@ -55,6 +55,8 @@ function main() {
         onExtContentLoad: function() {},
         onExtClose: function() {},
         extruderOpacity: 0.8,
+        closeOnExternalClick: false,
+        closeOnClick:false
     });
     $("#sidepanel").openMbExtruder(true);
 
