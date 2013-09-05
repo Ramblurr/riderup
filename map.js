@@ -8,7 +8,11 @@ var map_vis = null;
 
 function main() {
     // setup map
-    cartodb.createVis('map', 'http://rendezvous.cartodb.com/api/v2/viz/4bdd593e-1621-11e3-9eaf-53da8c591d44/viz.json').done(function(vis, layers) {
+    var opts = {
+        center: [45.21, -25.31],
+        zoom: 3
+    }
+    cartodb.createVis('map', 'http://rendezvous.cartodb.com/api/v2/viz/4bdd593e-1621-11e3-9eaf-53da8c591d44/viz.json', opts).done(function(vis, layers) {
         map_vis = vis;
         native_map = vis.getNativeMap();
 
