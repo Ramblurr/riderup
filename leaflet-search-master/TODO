@@ -1,0 +1,42 @@
+. important! implements uniq option 'source' that recognizes source type: url,array,callback or layer		, row 28
+
+. implement sub property filter for propertyName,propertyLoc like this:  "prop.subprop.title", row 31
+
+. add option for persist markerLoc after collapse!, row 42
+
+. add option collapsed, like control.layers, row 51
+
+. resize _input on map resize, row 76
+
+. add option for case sesitive search, also showLocation, row 286
+
+. patch! remove on Leaflet stable update include isArray() method, row 340
+
+. verify json[i].hasOwnProperty(propName), row 354
+
+. remove script node after call run, row 360
+
+. add rnd param or randomize callback name! in recordsFromJsonp, row 369
+
+. add rnd param or randomize callback name! in recordsFromAjax			, row 389
+
+. implements autype without selection(useful for mobile device), row 435
+
+. important optimization!!! always append data in this._recordsCache, row 524
+
+. here insert function that search inputText FIRST in _recordsCache keys and if not find results.. , row 528
+
+. change structure of _recordsCache, row 531
+
+. refact _handleAutoresize now is not accurate, row 582
+
+. showLocation: start animation after setView or panTo, maybe with map.on('moveend')...	, row 666
+
+. add custom icon!	, row 688
+
+. add inner circle, row 696
+
+. refact animate() more smooth! like this: http://goo.gl/DDlRs, row 752
+
+. use create event 'animateEnd' in SearchMarker , row 774
+
